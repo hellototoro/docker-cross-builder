@@ -1,0 +1,14 @@
+# 预编译库目录
+
+这个目录用于存放预编译的ARM64库，例如：
+
+```
+prebuilt-libs/
+├── qt5-arm64/          # Qt5 ARM64版本
+├── qt6-arm64/          # Qt6 ARM64版本  
+├── boost-arm64/        # Boost ARM64版本
+├── opencv-arm64/       # OpenCV ARM64版本
+└── custom-libs/        # 自定义库
+```
+
+如果您有预编译的库，可以将它们放在这里，然后修改Dockerfile来复制这些库到容器中。

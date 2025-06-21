@@ -1,0 +1,12 @@
+# 工作目录
+
+这个目录用于存放您要编译的项目源码。
+
+示例用法：
+```bash
+# 将您的项目复制到这里
+cp -r /path/to/your/project ./workspace/
+
+# 在容器中构建
+build-universal.sh /workspace/your-project
+```

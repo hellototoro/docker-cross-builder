@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  cross-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.universal
+    image: universal-cross-builder:latest
+    container_name: universal-cross-builder
+    
+    # 挂载工作目录
+    volumes:
+      - ./workspace:/workspace
+      - ./output:/output
+      # 可选：挂载预编译的库
+      - ./prebuilt-libs:/prebuilt-libs:ro
+      # 可选：挂载主机的Qt安装
+      # - /opt/qt5:/opt/qt5-host:ro
+      
+    # 环境变量
+    environment:
+      - DISPLAY=${DISPLAY}
+      - CROSS_COMPILE=aarch64-linux-gnu-
+      - ARCH=arm64
+      
+    # 如果需要X11转发
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    
+    # 网络模式
+    network_mode: bridge
+    
+    # 保持容器运行
+    tty: true
+    stdin_open: true
+    
+    # 工作目录
+    working_dir: /workspace
+    
+    # 默认命令
+    command: /bin/bash
+
+  # 可选：开发环境服务
+  dev-env:
+    extends: cross-builder
+    container_name: cross-builder-dev
+    
+    # 额外的开发工具挂载
+    volumes:
+      - ./workspace:/workspace
+      - ./output:/output
+      - ~/.gitconfig:/home/builder/.gitconfig:ro
+      - ~/.ssh:/home/builder/.ssh:ro
+      
+    # 端口映射（如果需要Web服务）
+    ports:
+      - "8080:8080"
+      - "3000:3000"
