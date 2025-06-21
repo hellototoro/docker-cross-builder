@@ -47,7 +47,6 @@ RUN apt-get install -y \
     libc6-dev-arm64-cross \
     linux-libc-dev-arm64-cross \
     # 构建系统
-    cmake \
     ninja-build \
     make \
     autoconf \
