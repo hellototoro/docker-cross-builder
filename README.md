@@ -18,11 +18,11 @@
 ### 1. 构建容器
 
 ```bash
-# 使用新的通用Dockerfile
-docker build -f Dockerfile.universal -t universal-cross-builder .
+# 使用主要的Dockerfile
+docker build -f Dockerfile -t universal-cross-builder .
 
 # 或使用docker-compose
-docker-compose -f docker-compose-universal.yml build
+docker-compose build
 ```
 
 ### 2. 运行容器
@@ -35,8 +35,8 @@ docker run -it --rm \
   universal-cross-builder
 
 # 使用docker-compose
-docker-compose -f docker-compose-universal.yml up -d
-docker-compose -f docker-compose-universal.yml exec cross-builder bash
+docker-compose up -d
+docker-compose exec cross-builder bash
 ```
 
 ### 3. 构建项目
@@ -122,7 +122,7 @@ prebuilt-libs/
 └── custom-libs/
 ```
 
-2. 修改Dockerfile.universal，取消注释相关的COPY指令：
+2. 修改Dockerfile，取消注释相关的COPY指令：
 ```dockerfile
 COPY ./prebuilt-libs/qt5-arm64 /opt/qt5-arm64/
 COPY ./prebuilt-libs/boost-arm64 /opt/boost-arm64/

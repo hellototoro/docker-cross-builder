@@ -1,26 +1,23 @@
 # Universal Cross-Compilation Container for ARM64
 # 通用ARM64交叉编译容器
-FROM ubuntu:22.04
+ARG UBUNTU_VERSION=22.04
+FROM ubuntu:${UBUNTU_VERSION}
 
 # 设置环境变量
 ENV DEBIAN_FRONTEND=noninteractive
-ENV CROSS_COMPILE=aarch64-linux-gnu-
-ENV ARCH=arm64
 ENV LANG=C.UTF-8
 
 # 启用多架构支持
 RUN dpkg --add-architecture arm64
 
 # 复制源列表配置
-COPY sources.list /etc/apt/sources.list
-
-# 更新包管理器缓存
-RUN apt-get update && apt-get upgrade -y
+ARG UBUNTU_VERSION
+COPY sources${UBUNTU_VERSION}.list /etc/apt/sources.list
 
 # ============================================================================
 # 安装基础开发工具
 # ============================================================================
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     # 基础工具
     build-essential \
     wget \
@@ -142,6 +139,14 @@ RUN mkdir -p /opt/arm64-libs \
     /opt/opencv-arm64 \
     /opt/custom-libs
 
+# 创建动态链接器配置
+RUN echo "/opt/arm64-libs/lib" > /etc/ld.so.conf.d/arm64-libs.conf && \
+    echo "/opt/qt5-arm64/lib" >> /etc/ld.so.conf.d/arm64-libs.conf && \
+    echo "/opt/qt6-arm64/lib" >> /etc/ld.so.conf.d/arm64-libs.conf && \
+    echo "/opt/boost-arm64/lib" >> /etc/ld.so.conf.d/arm64-libs.conf && \
+    echo "/opt/opencv-arm64/lib" >> /etc/ld.so.conf.d/arm64-libs.conf && \
+    echo "/opt/custom-libs/lib" >> /etc/ld.so.conf.d/arm64-libs.conf
+
 # 如果主机有预编译的库，可以通过以下方式复制：
 # COPY ./prebuilt-libs/qt5-arm64 /opt/qt5-arm64/
 # COPY ./prebuilt-libs/boost-arm64 /opt/boost-arm64/
@@ -165,30 +170,6 @@ RUN pip3 install conan
 # RUN git clone https://github.com/Microsoft/vcpkg.git /opt/vcpkg && \
 #     cd /opt/vcpkg && \
 #     ./bootstrap-vcpkg.sh
-
-# ============================================================================
-# 配置交叉编译环境
-# ============================================================================
-# 设置环境变量
-ENV AR=aarch64-linux-gnu-ar \
-    CC=aarch64-linux-gnu-gcc \
-    CXX=aarch64-linux-gnu-g++ \
-    LINK=aarch64-linux-gnu-g++ \
-    STRIP=aarch64-linux-gnu-strip \
-    RANLIB=aarch64-linux-gnu-ranlib \
-    OBJCOPY=aarch64-linux-gnu-objcopy \
-    OBJDUMP=aarch64-linux-gnu-objdump \
-    NM=aarch64-linux-gnu-nm \
-    AS=aarch64-linux-gnu-as \
-    LD=aarch64-linux-gnu-ld
-
-# PKG_CONFIG配置
-ENV PKG_CONFIG_PATH="/usr/lib/aarch64-linux-gnu/pkgconfig:/opt/arm64-libs/lib/pkgconfig:/opt/qt5-arm64/lib/pkgconfig:/opt/qt6-arm64/lib/pkgconfig"
-ENV PKG_CONFIG_LIBDIR="/usr/lib/aarch64-linux-gnu/pkgconfig"
-
-# CMAKE配置
-ENV CMAKE_PREFIX_PATH="/usr/aarch64-linux-gnu:/opt/arm64-libs:/opt/qt5-arm64:/opt/qt6-arm64:/opt/boost-arm64:/opt/opencv-arm64"
-ENV CMAKE_FIND_ROOT_PATH="/usr/aarch64-linux-gnu:/opt/arm64-libs"
 
 # ============================================================================
 # 安装部署工具

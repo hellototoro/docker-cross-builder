@@ -228,12 +228,19 @@ fi
 mkdir -p "$OUTPUT_DIR"
 
 # 设置环境变量
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
 export CC=aarch64-linux-gnu-gcc
 export CXX=aarch64-linux-gnu-g++
 export AR=aarch64-linux-gnu-ar
 export STRIP=aarch64-linux-gnu-strip
 export RANLIB=aarch64-linux-gnu-ranlib
-export PKG_CONFIG_PATH="/usr/lib/aarch64-linux-gnu/pkgconfig:/opt/arm64-libs/lib/pkgconfig"
+export LINK=aarch64-linux-gnu-g++
+export OBJCOPY=aarch64-linux-gnu-objcopy
+export OBJDUMP=aarch64-linux-gnu-objdump
+export NM=aarch64-linux-gnu-nm
+export AS=aarch64-linux-gnu-as
+export LD=aarch64-linux-gnu-ld
 
 # 根据项目类型构建
 case $PROJECT_TYPE in

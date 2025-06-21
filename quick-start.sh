@@ -48,9 +48,9 @@ mkdir -p workspace output prebuilt-libs
 # 构建镜像
 echo_info "构建Docker镜像..."
 if [[ "$USE_COMPOSE" == true ]]; then
-    docker-compose -f docker-compose-universal.yml build
+    docker-compose build
 else
-    docker build -f Dockerfile.universal -t universal-cross-builder .
+    docker build -f Dockerfile -t universal-cross-builder .
 fi
 
 echo_info "构建完成！"
@@ -61,8 +61,8 @@ echo
 if [[ $REPLY =~ ^[Nn]$ ]]; then
     echo_info "您可以稍后使用以下命令启动容器："
     if [[ "$USE_COMPOSE" == true ]]; then
-        echo "docker-compose -f docker-compose-universal.yml up -d"
-        echo "docker-compose -f docker-compose-universal.yml exec cross-builder bash"
+        echo "docker-compose up -d"
+        echo "docker-compose exec cross-builder bash"
     else
         echo "docker run -it --rm -v \$(pwd)/workspace:/workspace -v \$(pwd)/output:/output universal-cross-builder"
     fi
@@ -72,12 +72,12 @@ fi
 # 启动容器
 echo_info "启动容器..."
 if [[ "$USE_COMPOSE" == true ]]; then
-    docker-compose -f docker-compose-universal.yml up -d
+    docker-compose up -d
     echo_info "容器已启动，使用以下命令进入容器："
-    echo "docker-compose -f docker-compose-universal.yml exec cross-builder bash"
+    echo "docker-compose exec cross-builder bash"
     echo ""
     echo_info "正在进入容器..."
-    docker-compose -f docker-compose-universal.yml exec cross-builder bash
+    docker-compose exec cross-builder bash
 else
     docker run -it --rm \
         -v $(pwd)/workspace:/workspace \

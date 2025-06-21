@@ -4,7 +4,7 @@ services:
   cross-builder:
     build:
       context: .
-      dockerfile: Dockerfile.universal
+      dockerfile: Dockerfile
     image: universal-cross-builder:latest
     container_name: universal-cross-builder
     
